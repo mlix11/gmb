@@ -2,6 +2,9 @@
 
 The *GMB* has the propuse to provide a simple REST-Api for a home media database. 
 
+# Build Status
+![traivs build](https://travis-ci.org/loose11/gmb.svg?branch=master)
+
 # Features
 
 We have to evalute the features of the *GMB*. First of all it is a Open-Source-Learning project for everyone who is interested in. 
