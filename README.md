@@ -13,10 +13,9 @@ First of all, the *GMB* should cover all basic CRUD operations with the additona
 Possible features: 
 
 * Integration of a meta-data info (e.g MovieDB)
-* Authentication[^1] 
+* Authentication<sup>1</sup> 
 
 For feature request open a [issue](https://github.com/loose11/gmb/issues).
 
 
-[^1]: 
-An authentication will be discussed later, because the tool can be used only at the home network.  
+<sup>1</sup>An authentication will be discussed later, because the tool can be used only at the home network.  
