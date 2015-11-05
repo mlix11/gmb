@@ -1,28 +1,22 @@
-# GMB - Go Media Backend
+#![traivs build](https://travis-ci.org/loose11/gmb.svg?branch=master)
 
-The *GMB* has the propuse to provide a simple REST-Api for a home media database. 
+ GMB - Go Media Backend
 
-# Build Status
-![traivs build](https://travis-ci.org/loose11/gmb.svg?branch=master)
+The *GMB* stands for the unsatisfied thirst for an open media backend, which expose a interface to communicate with and further more is free of all frontend restrictions. 
+
+The project is at a early stage of development and probably not quite a alpha version. 
 
 # Features
 
-We have to evalute the features of the *GMB*. First of all it is a Open-Source-Learning project for everyone who is interested in. 
+First of all, the *GMB* should cover all basic CRUD operations with the additonal REST-interface which it provides. If this these tasks are completed, there will be more work. 
 
-Planned Features: 
-- Implementing basic REST-Api for request the content on disk
-	- GET for available files
-	- POST for uploading a new file to the specific folder
-	- DELETE for deleting a file
-- Differentiate between Movie, Music and Picture files
-- Provide additional information via e.g movieDB
+Possible features: 
+
+* Integration of a meta-data info (e.g MovieDB)
+* Authentication[^1] 
 
 For feature request open a [issue](https://github.com/loose11/gmb/issues).
 
-# Contribute
 
-What do you need for a valid pull request?
-- Tests
-
-It's easy as hell. Make a pull request. 
-
+[^1]: 
+An authentication will be discussed later, because the tool can be used only at the home network.  

@@ -5,7 +5,9 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
+	"time"
 )
 
 var (
@@ -22,6 +24,11 @@ type SearchDatabaseTest struct {
 	fileType      string
 	searchValue   string
 	expectedFiles []File
+}
+
+type DeleteDatabaseTest struct {
+	SearchDatabaseTest
+	Error dbError
 }
 
 var db AppDatabase
@@ -153,6 +160,49 @@ func TestGetFile(t *testing.T) {
 		if !reflect.DeepEqual(files, dt.expectedFiles) {
 			t.Fatalf("Expected array for search %q to be %q, but was %q", dt.searchValue, dt.expectedFiles, files)
 		}
+	}
+
+	teardown()
+}
+
+func TestDeleteFile(t *testing.T) {
+	setup()
+
+	testValues := []DeleteDatabaseTest{
+		{
+			SearchDatabaseTest{"music", "broke.mp3", []File{}},
+			dbError{},
+		},
+		{
+			SearchDatabaseTest{"picture", "mountain", []File{}},
+			dbError{},
+		},
+		{
+			SearchDatabaseTest{"", "mountain", []File{}},
+			dbError{
+				// Time doesn't matter
+				time.Now(), "No filetype was provided",
+			},
+		},
+	}
+
+	for _, dt := range testValues {
+		files, err := db.DeleteFile(dt.fileType, dt.searchValue)
+		if err != nil {
+			errorCmpMsg := err.Error()
+			message := errorCmpMsg[strings.LastIndex(errorCmpMsg, ":")+2:]
+			if message != dt.Error.What {
+				t.Fatalf("Expected no error: %q, blaba: %s", err, message)
+			}
+		}
+		if len(files) > 0 {
+			t.Fatalf("There should be no files like: %q", files)
+		}
+		filesWithName, _ := db.GetFile(dt.fileType, dt.searchValue)
+		if len(filesWithName) > 0 {
+			t.Fatalf("Expected no file with value %s, but was %q", dt.searchValue, filesWithName)
+		}
+
 	}
 
 	teardown()

@@ -1,11 +1,13 @@
 package database
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var defaultFolders = [3]string{"movie", "music", "picture"}
@@ -13,6 +15,7 @@ var defaultFolders = [3]string{"movie", "music", "picture"}
 type AppDatabase interface {
 	GetAll(string) ([]File, error)
 	GetFile(filetype string, searchValue string) ([]File, error)
+	DeleteFile(filetype string, searchValue string) ([]File, error)
 }
 
 type AppDatabaseImp struct {
@@ -23,6 +26,11 @@ type File struct {
 	name     string
 	size     int64
 	filetype string
+}
+
+type dbError struct {
+	When time.Time
+	What string
 }
 
 var filesArr []File
@@ -125,6 +133,31 @@ func (adi AppDatabaseImp) GetFile(filetype string, searchValue string) ([]File, 
 	}
 
 	return []File{}, nil
+}
+
+func (adi AppDatabaseImp) DeleteFile(filetype string, filename string) ([]File, error) {
+
+	if len(filetype) > 0 {
+		files, err := adi.GetFile(filetype, filename)
+		if err != nil {
+			return []File{}, err
+		}
+		if len(files) == 1 {
+			return []File{}, os.Remove(adi.DatabaseBasePath + filetype + string(os.PathSeparator) + files[0].name)
+		}
+	} else {
+
+		return []File{}, dbError{
+			time.Now(),
+			"No filetype was provided",
+		}
+	}
+
+	return []File{}, nil
+}
+
+func (e dbError) Error() string {
+	return fmt.Sprintf("%v: %v", e.When, e.What)
 }
 
 // exists returns whether the given file or directory exists or not
