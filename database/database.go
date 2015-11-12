@@ -16,6 +16,7 @@ type AppDatabase interface {
 	GetAll(string) ([]File, error)
 	GetFile(filetype string, searchValue string) ([]File, error)
 	DeleteFile(filetype string, searchValue string) ([]File, error)
+	SaveFile(filetype string, filename string, file []byte)(error)
 }
 
 type AppDatabaseImp struct {
@@ -154,6 +155,23 @@ func (adi AppDatabaseImp) DeleteFile(filetype string, filename string) ([]File, 
 	}
 
 	return []File{}, nil
+}
+
+func (adi AppDatabaseImp) SaveFile(fileType string, filename string, file []byte)(error){
+
+	if len(fileType) > 0 && len(filename) > 0{
+		err := ioutil.WriteFile(adi.DatabaseBasePath + fileType + string(os.PathSeparator) + filename, file, 0777)
+		if err != nil {
+			return err;
+		}
+	}else{
+		return dbError{
+			time.Now(),
+			"No filetype/filename was provided",
+		}
+	}
+
+	return nil
 }
 
 func (e dbError) Error() string {

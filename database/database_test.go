@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"io/ioutil"
 	"reflect"
 	"strings"
 	"testing"
@@ -87,6 +88,7 @@ func teardown() {
 
 func TestFolderExist(t *testing.T) {
 	setup()
+	defer teardown()
 
 	for _, value := range defaultFolders {
 		isExisting, err := exists(basePath + value)
@@ -96,12 +98,12 @@ func TestFolderExist(t *testing.T) {
 			t.Fatalf("Folder dont exist %q --> %q", value, basePath)
 		}
 	}
-	teardown()
 
 }
 
 func TestGetAll(t *testing.T) {
 	setup()
+	defer teardown()
 
 	getAllTests := []DatabaseTest{
 		{
@@ -125,11 +127,11 @@ func TestGetAll(t *testing.T) {
 		}
 
 	}
-	teardown()
 }
 
 func TestGetFile(t *testing.T) {
 	setup()
+	defer teardown()
 
 	getTest := []SearchDatabaseTest{
 		{
@@ -162,11 +164,11 @@ func TestGetFile(t *testing.T) {
 		}
 	}
 
-	teardown()
 }
 
 func TestDeleteFile(t *testing.T) {
 	setup()
+	defer teardown()
 
 	testValues := []DeleteDatabaseTest{
 		{
@@ -205,5 +207,25 @@ func TestDeleteFile(t *testing.T) {
 
 	}
 
-	teardown()
+}
+
+func TestSaveFile(t *testing.T) {
+	setup()
+	defer teardown()
+
+	files, _ := db.GetFile("music", "broke.mp3")
+
+	pathToTestFile := files[0];
+
+	data, err := ioutil.ReadFile(basePath + pathToTestFile.filetype + string(os.PathSeparator) + pathToTestFile.name)
+	if err != nil {
+		t.Fatalf("There is a error while reading file", err)
+	}
+
+	err = db.SaveFile("music", "broke.mp3", data)
+
+	if err != nil {
+		t.Fatalf("There should be no error: %q", err)
+	}
+
 }
